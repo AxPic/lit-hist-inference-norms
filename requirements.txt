@@ -1,0 +1,27 @@
+# Abhängigkeiten der Pipeline und Auswertung
+# Installation:  pip install -r requirements.txt
+# Getestet mit Python >= 3.10
+
+# --- Generative Extraktion (Ebene 0; Stufe 1 & 2) ---
+anthropic            # Anthropic-API-Client (Modell: claude-opus-4-8)
+pdfplumber           # PDF-Textextraktion mit Kapitelstruktur
+tqdm                 # Fortschrittsanzeige bei langen API-Läufen
+
+# --- Datenhaltung & Tabellen ---
+pandas               # DataFrames, Ein-/Ausgabe
+openpyxl             # Lesen/Schreiben der .xlsx-Dateien
+numpy                # numerische Hilfsfunktionen
+
+# --- Graph- & Netzwerkanalyse ---
+networkx             # Inferenzgraph, Komponenten, Betweenness
+matplotlib           # Diagramme (Systembezug, Diachronie)
+pyvis                # kapitelweise interaktive Netzwerk-Visualisierung
+
+# --- Optional: zum Ausführen der Notebooks ---
+# jupyterlab
+# ipykernel
+
+# Hinweis: Die Versionen sind bewusst nicht gepinnt. Für eine exakt
+# reproduzierbare Umgebung empfiehlt es sich, nach erfolgreichem Lauf
+#   pip freeze > requirements.lock.txt
+# zu erzeugen und mitzuliefern.

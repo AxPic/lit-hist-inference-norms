@@ -31,13 +31,17 @@ Beschreibung des Verfahrens steht in **[`PIPELINE.md`](./PIPELINE.md)**.
 │   ├── stufe1_propositionsextraktion_kapitel_final.ipynb
 │   ├── stufe2_inter_satz_relationen_kapitel_final.ipynb
 │   ├── inferenzgraph_analyse_kapitel_final_V2.ipynb
-│   └── systembezug_netzwerk_analyse.ipynb
+│   ├── systembezug_netzwerk_analyse.ipynb
+│   ├── eval_plausibility.ipynb                ← Evaluation: Plausibilität der Inferenzen
+│   └── eval_systembezug.ipynb                 ← Evaluation: Systembezug
 │
 └── data/
     ├── Beutin_complete_Direktzitat_stufe1.xlsx
     ├── Beutin_complete_Direktzitat_gesamt_inf.xlsx
     ├── Beutin_complete_Direktzitat_gesamt_sytembezug.xlsx
-    └── Beutin_complete_Direktzitat_metriken.xlsx
+    ├── Beutin_complete_Direktzitat_metriken.xlsx
+    ├── Beutin_complete_INF_System_EVAL_V1_eval_ergebnisse.xlsx  ← Eval-Ergebnisse Inferenzen
+    └── systembezug_eval_ergebnisse.xlsx                         ← Eval-Ergebnisse Systembezug
 ```
 
 ---
@@ -77,6 +81,8 @@ einen expliziten dreistufigen Abgrenzungstest (Festlegungs-, Berechtigungs-, Ink
 | `stufe2_inter_satz_relationen_kapitel_final.ipynb` | Stufe 2 + Zusammenführung | `…_stufe1.json/csv` + Inter-Prompt → `…_gesamt.{xlsx,csv}`, `…_stufe2_inter.{csv,json}` |
 | `inferenzgraph_analyse_kapitel_final_V2.ipynb` | Graphkonstruktion + Metriken | Stufe-1/2-JSON + Systembezug-CSV → `…_metriken.xlsx` |
 | `systembezug_netzwerk_analyse.ipynb` | Systembezug-Netzwerkanalyse | `…_metriken.xlsx` → Top-Gegenstände, Brücken, Diachronie |
+| `eval_plausibility.ipynb` | Evaluation: Plausibilität der Inferenzen (IAA + LLM-Performance) | Annotations-XLSX → `…_EVAL_V1_eval_ergebnisse.xlsx` |
+| `eval_systembezug.ipynb` | Evaluation: Systembezug (IAA + LLM vs. Goldstandard) | Annotations-/Gold-/LLM-XLSX → `systembezug_eval_ergebnisse.xlsx` |
 
 Modell durchgängig: `claude-opus-4-8`. API-Schlüssel über die Umgebungsvariable
 `MY_ANTHROPIC`. Beide Extraktionsnotebooks schreiben Checkpoints (`checkpoint_batch_*` bzw.
@@ -104,6 +110,24 @@ Die Tabellen bilden die Stufen der Pipeline ab. **Spaltenwörterbuch:**
 - *Typverteilung* (4): `Typ · Anzahl · Anteil · Intra · Inter`
 - *Systembezug pro Kapitel* (16): `Kapitel · Propositionen · LIT · NLIT · LIT-NLIT · Ohne · LIT % · NLIT % · LIT-NLIT %`
 
+### Evaluation — Validierung der Annotationen
+
+Zwei Notebooks prüfen die Qualität der automatischen Annotation gegen manuell annotierte
+Stichproben: zunächst das **Inter-Annotator-Agreement** (IAA, Cohen's κ) zweier
+unabhängiger Annotator:innen, dann die **LLM-Performance** gegen einen Goldstandard aus den
+übereinstimmenden Annotationen (`scikit-learn`).
+
+**`eval_plausibility.ipynb` → `Beutin_complete_INF_System_EVAL_V1_eval_ergebnisse.xlsx`**
+— Post-hoc-Plausibilitätsvalidierung der Inferenzrelationen (N = 105). IAA Cohen's κ = 0.653
+(substanziell), 92.4 % Übereinstimmung; LLM-Performance Accuracy 90.7 %, F1 0.951.
+Blätter: *Zusammenfassung · Performance pro Typ · Nicht-plausible Relationen · Disagreements*.
+
+**`eval_systembezug.ipynb` → `systembezug_eval_ergebnisse.xlsx`**
+— Evaluation von Systembezug und Gegenstandsextraktion (N = 106). IAA Cohen's κ = 1.000
+(100 % Übereinstimmung); LLM vs. Goldstandard Accuracy 96.2 %, κ = 0.823;
+LIT-NLIT-Erkennung F1 0.842. Blätter: *Zusammenfassung · CM IAA · CM LLM vs Gold ·
+Pro-Label-Metriken · Fehler*.
+
 
 ---
 
@@ -124,19 +148,18 @@ Die Tabellen bilden die Stufen der Pipeline ab. **Spaltenwörterbuch:**
 
 - Python ≥ 3.10
 - Pakete: `anthropic`, `pdfplumber`, `pandas`, `openpyxl`, `networkx`, `matplotlib`
-  (für die interaktive Visualisierung zusätzlich `pyvis`/`plotly`)
+  (für die interaktive Visualisierung zusätzlich `pyvis`/`plotly`; für die Evaluation `scikit-learn`)
 - Umgebungsvariable `MY_ANTHROPIC` mit gültigem Anthropic-API-Schlüssel
 - Modell: `claude-opus-4-8`
 
-> **Empfehlung:** Eine `requirements.txt` und eine `LICENSE` ergänzen; eine `.gitignore`
-> für `checkpoint_*`-Dateien anlegen.
 
 ---
 
 ## Wichtige Hinweise
 
 **Urheberrecht.** Das Eingangskorpus (Beutin et al., *Deutsche Literaturgeschichte*) ist
-**nicht** Teil dieses Repositories. Die Felder `Proposition` und `Reasoning` sind
+**nicht** Teil dieses Repositories: https://doi.org/10.1007/978-3-476-04953-7 
+Die Felder `Proposition` und `Reasoning` sind
 KI-erzeugte Paraphrasen bzw. Begründungen, keine Zitate.
 
 ---

@@ -24,6 +24,9 @@ inferentiellen Relationen, in zwei Stufen), **Ebene 1** (Systembezug), **Ebene 2
                            ▼
    ANALYSE  Inferenzgraph → Metriken      inferenzgraph_analyse_…V2.ipynb → …_metriken.xlsx
             Systembezug-Netzwerk          systembezug_netzwerk_analyse.ipynb
+
+   EVALUATION  Plausibilität der Inferenzen   eval_plausibility.ipynb
+               Systembezug & Gegenstände      eval_systembezug.ipynb
 ```
 
 
@@ -32,7 +35,7 @@ inferentiellen Relationen, in zwei Stufen), **Ebene 1** (Systembezug), **Ebene 2
 ## Voraussetzungen
 
 - Python ≥ 3.10; Pakete `anthropic`, `pdfplumber`, `pandas`, `openpyxl`, `networkx`,
-  `matplotlib` (Visualisierung: `pyvis`/`plotly`).
+  `matplotlib` (Visualisierung: `pyvis`/`plotly`; Evaluation: `scikit-learn`).
 - Anthropic-API-Schlüssel.
 - Modell `claude-opus-4-8` für alle generativen Schritte.
 - Alle generativen Schritte schreiben **Checkpoints**, sodass unterbrochene Läufe wiederaufgenommen werden können.
@@ -157,6 +160,48 @@ Brücken mit höchster Betweenness; sowie die **diachrone Entwicklung** über di
 
 ---
 
+## Evaluation — Validierung der Annotationen
+
+Zwei Notebooks prüfen die Annotationsqualität gegen manuell annotierte Stichproben. Beide
+folgen demselben Aufbau: zunächst das **Inter-Annotator-Agreement** (IAA, Cohen's κ) zweier
+unabhängiger Annotator:innen, dann ein **Goldstandard** aus den übereinstimmenden Urteilen
+und schließlich die **LLM-Performance** gegen diesen Goldstandard (`scikit-learn`).
+
+### Evaluation A — Plausibilität der Inferenzen
+
+**Notebook:** `eval_plausibility.ipynb`
+**Eingabe:** `Beutin_complete_INF+System_EVAL_V1.xlsx` (zwei Annotator-Blätter mit
+Plausibilitätsurteilen über extrahierte Relationen).
+**Verfahren:** IAA über das Plausibilitätsurteil → Goldstandard (übereinstimmende
+Annotationen) → Post-hoc-Plausibilitätsmetriken, auch nach Relationstyp aufgeschlüsselt;
+zusätzlich Fehler- und Disagreement-Analyse.
+**Ergebnis (N = 105):** IAA Cohen's κ = 0.653 (substanziell), 92.4 % Übereinstimmung;
+LLM-Performance Accuracy 90.7 %, Precision 0.907, Recall 1.000, F1 0.951. Pro Typ: PR-BER
+und PR-FLG je 100 % plausibel, PR-UNA 75.7 %.
+**Ausgabe:** `Beutin_complete_INF_System_EVAL_V1_eval_ergebnisse.xlsx` — Blätter
+*Zusammenfassung · Performance pro Typ · Nicht-plausible Relationen · Disagreements*.
+
+> Methodik: Da nur tatsächlich extrahierte Relationen evaluiert werden, gilt Recall = 1.0
+> per Definition und Accuracy = Precision; die Evaluation misst die **Präzision** der
+> Extraktion, nicht ihre Vollständigkeit.
+
+### Evaluation B — Systembezug und Gegenstandsextraktion
+
+**Notebook:** `eval_systembezug.ipynb`
+**Eingabe:** Annotator-Stichprobe (`…_EVAL_V1.xlsx`), LLM-Klassifikat
+(`…_classify_systembezug.xlsx`), Goldstandard (`Beutin_systembezug_gold.xlsx`).
+**Verfahren:** Teil A IAA (Cohen's κ, Konfusionsmatrix); Teil B LLM-Klassifikation gegen den
+Goldstandard (Accuracy, κ, Pro-Label-Precision/Recall/F1, eigener Fokus auf die
+LIT-NLIT-Erkennung); Fehleranalyse.
+**Ergebnis (N = 106):** IAA Cohen's κ = 1.000 (100 % Übereinstimmung); LLM vs. Goldstandard
+Accuracy 96.2 %, κ = 0.823; LIT-NLIT-Erkennung Precision 0.889 / Recall 0.800 / F1 0.842;
+pro Label NLIT F1 0.984, LIT-NLIT 0.842, LIT 0.667.
+**Ausgabe:** `systembezug_eval_ergebnisse.xlsx` — Blätter *Zusammenfassung · CM IAA ·
+CM LLM vs Gold · Pro-Label-Metriken · Fehler*.
+
+
+---
+
 ## Reproduktion — Ausführungsreihenfolge
 
 1. PDF bereitstellen → **Stufe 1** ausführen → `…_stufe1.{json,csv,xlsx}`.
@@ -165,6 +210,8 @@ Brücken mit höchster Betweenness; sowie die **diachrone Entwicklung** über di
    `…_systembezug.csv`.
 4. **Analyse A** ausführen → `…_metriken.xlsx`.
 5. **Analyse B** ausführen → Top-Gegenstände, Brücken, Diachronie.
+6. **(optional) Evaluation** gegen die manuell annotierten Stichproben ausführen
+   (`eval_plausibility.ipynb`, `eval_systembezug.ipynb`) → `…_eval_ergebnisse.xlsx`.
 
 **Hinweise.** Die Notebooks lesen ihre Eingaben teils als **JSON/CSV** (nicht als XLSX);
 die Pfadkonstanten am Anfang jedes Notebooks ggf. anpassen. Die generativen Schritte sind

@@ -2,8 +2,7 @@
 
 Dieses Repository enthält die Daten, Annotationsrichtlinien, Prompts und Auswertungs­notebooks
 eines Projekts, das eine Literaturgeschichte (Beutin et al., *Deutsche Literaturgeschichte*)
-mit den Mitteln von Robert Brandoms Inferentialismus rekonstruiert. Ziel ist es, die
-**impliziten Schlussmuster** literaturgeschichtlichen Argumentierens explizit zu machen:
+mit den Mitteln von Robert Brandoms Inferentialismus rekonstruiert. Ziel ist es, die **impliziten Begründungsmuster** literaturgeschichtlichen Schreibens sichtbar zu machen:
 Welche Propositionen stützen, erzwingen oder schließen einander aus, und wie wird das
 Literarische mit dem Nicht-Literarischen verknüpft?
 

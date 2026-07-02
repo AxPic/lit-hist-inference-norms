@@ -39,7 +39,7 @@ Beschreibung des Verfahrens steht in **[`PIPELINE.md`](./PIPELINE.md)**.
     ├── Beutin_complete_Direktzitat_gesamt_inf.xlsx
     ├── Beutin_complete_Direktzitat_gesamt_sytembezug.xlsx
     ├── Beutin_complete_Direktzitat_metriken.xlsx
-    ├── Beutin_complete_INF+System_EVAL_eval_ergebnisse.xlsx     ← Eval-Ergebnisse Inferenzen
+    ├── Beutin_complete_INF+System_eval_ergebnisse.xlsx     ← Eval-Ergebnisse Inferenzen
     └── systembezug_eval_ergebnisse.xlsx                         ← Eval-Ergebnisse Systembezug
 ```
 
@@ -79,9 +79,9 @@ einen expliziten dreistufigen Abgrenzungstest (Festlegungs-, Berechtigungs-, Ink
 | `stufe1_propositionsextraktion_kapitel_final.ipynb` | PDF-Erschließung + Stufe 1 | Beutin-PDF + Intra-Prompt → `…_stufe1.{xlsx,csv,json}` |
 | `stufe2_inter_satz_relationen_kapitel_final.ipynb` | Stufe 2 + Zusammenführung | `…_stufe1.json/csv` + Inter-Prompt → `…_gesamt.{xlsx,csv}`, `…_stufe2_inter.{csv,json}` |
 | `inferenzgraph_analyse_kapitel_final_V3.ipynb` | Graphkonstruktion + Metriken (Betweenness in drei Varianten, s. u.) | Stufe-1/2-JSON + Systembezug-CSV → `…_metriken.xlsx` |
-| `systembezug_netzwerk_analyse_corrected.ipynb` | Systembezug-Netzwerkanalyse (kapitelübergreifende Vergleiche nur über skalengleiche Metriken) | `…_metriken.xlsx` → Top-Gegenstände, Brücken, Diachronie |
-| `eval_plausibility_corrected.ipynb` | Evaluation: Plausibilität der Inferenzen (IAA + getrennte Extraktions-/Nicht-Extraktions-Kennzahlen) | Annotations-XLSX → `…_eval_ergebnisse.xlsx` |
-| `eval_systembezug_corrected.ipynb` | Evaluation: Systembezug (IAA + LLM vs. Goldstandard) | Annotations-/LLM-XLSX → `systembezug_eval_ergebnisse.xlsx` |
+| `systembezug_netzwerk_analyse.ipynb` | Systembezug-Netzwerkanalyse (kapitelübergreifende Vergleiche nur über skalengleiche Metriken) | `…_metriken.xlsx` → Top-Gegenstände, Brücken, Diachronie |
+| `eval_plausibility.ipynb` | Evaluation: Plausibilität der Inferenzen (IAA + getrennte Extraktions-/Nicht-Extraktions-Kennzahlen) | Annotations-XLSX → `…_eval_ergebnisse.xlsx` |
+| `eval_systembezug.ipynb` | Evaluation: Systembezug (IAA + LLM vs. Goldstandard) | Annotations-/LLM-XLSX → `systembezug_eval_ergebnisse.xlsx` |
 
 Modell durchgängig: `claude-opus-4-8`. API-Schlüssel über die Umgebungsvariable
 `MY_ANTHROPIC`. Beide Extraktionsnotebooks schreiben Checkpoints (`checkpoint_batch_*` bzw.

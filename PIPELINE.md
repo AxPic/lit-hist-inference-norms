@@ -22,7 +22,7 @@ inferentiellen Relationen, in zwei Stufen), **Ebene 1** (Systembezug), **Ebene 2
             → …_gesamt_sytembezug.xlsx  (+ Blatt „Verknüpfungen LIT-NLIT")
                            │
                            ▼
-   ANALYSE  Inferenzgraph → Metriken      inferenzgraph_analyse_…V2.ipynb → …_metriken.xlsx
+   ANALYSE  Inferenzgraph → Metriken      inferenzgraph_analyse_…V3.ipynb → …_metriken.xlsx
             Systembezug-Netzwerk          systembezug_netzwerk_analyse.ipynb
 
    EVALUATION  Plausibilität der Inferenzen   eval_plausibility.ipynb
@@ -47,7 +47,7 @@ Konvention: `STEM = "Beutin_complete_Direktzitat"`; Ausgabedateien folgen dem Mu
 
 ## Schritt 0 — Eingangskorpus
 
-**Textgrundlage:** Beutin, Wolfgang/Beilein, Matthias/Emmerich, Wolfgang u. a.: Deutsche Literaturgeschichte: Von den Anfängen bis zur Gegenwart, Stuttgart 2019. DOI: https://doi.org/10.1007/978-3-476-04953-7 (Volltext als PDF).
+**Textgrundlage:** Beutin, Wolfgang/Beilein, Matthias/Emmerich, Wolfgang u. a.: Deutsche Literaturgeschichte: Von den Anfängen bis zur Gegenwart, Stuttgart 2019. DOI: https://doi.org/10.1007/978-3-476-04953-7 (Volltext als PDF).
 Das Notebook `stufe1_…ipynb` liest das PDF mit `pdfplumber` und rekonstruiert die **Kapitelstruktur**, sodass die nachfolgenden Schritte kapitelweise arbeiten.
 
 > Das PDF ist aus urheberrechtlichen Gründen **nicht** Teil des Repositories. Es bildet
@@ -131,18 +131,40 @@ unten als Eingabe verwendet.
 
 ## Analyse A — Inferenzgraph & Metriken
 
-**Notebook:** `inferenzgraph_analyse_kapitel_final_V2.ipynb`
+**Notebook:** `inferenzgraph_analyse_kapitel_final_V3.ipynb`
 **Eingabe:** `{STEM}_stufe1.json`, `{STEM}_stufe2_inter.json`, `{STEM}_systembezug.csv`.
 
 Aus Propositionen (Knoten, gefärbt nach Systembezug) und Relationen (Kanten,
 Grund → gestützte Aussage) wird mit `networkx` ein Graph konstruiert. Das Notebook berechnet
 u. a.: tragende Knoten (global), unbegründete „Fundamentalbehauptungen", Relationstyp-
-Verteilung, inferentielle Dichte pro Kapitel, Konnektoranalyse, Betweenness-Zentralität,
+Verteilung, inferentielle Vernetzung pro Kapitel, Konnektoranalyse, Zentralitätsmetriken,
 Systembezug-Verteilung pro Kapitel, systemgrenzenüberschreitende Kanten,
 Verknüpfungsmuster (LIT-NLIT) sowie eine kapitelweise interaktive Visualisierung.
 
+**Zentralität wird in drei klar getrennten Varianten berechnet** (V3):
+
+1. **Betweenness (roh)** — absolute Zahl kürzester Pfade durch den Knoten. Als
+   Rangordnung nur **innerhalb** eines Kapitels bzw. einer Komponente interpretierbar.
+   Die komponentenweise Berechnung reproduziert die früheren kapitelweisen Rohwerte exakt.
+2. **Betweenness (komponentennormalisiert)** — Rohwert geteilt durch (k−1)(k−2) der
+   eigenen schwachen Komponente (Größe k). Kapitelübergreifend skalengleich; begünstigt
+   jedoch Kleinstkomponenten (Mittelknoten einer Dreierkette = 0.5) und dient daher
+   Mittelwert- und Anteilsvergleichen, **nicht** als alleiniges Ranking.
+3. **Cross-System-Betweenness** — Anzahl kürzester Pfade zwischen `LIT`- und
+   `NLIT`-Propositionen (beide Richtungen) durch den Knoten: die absolute
+   **Vermittlungslast zwischen den Systemen**; Grundlage des Top-Brücken-Rankings.
+
+Ergänzend: **Brücken-Score** (min(#LIT-Nachbarn, #NLIT-Nachbarn); > 0 genau dann, wenn
+der Knoten real beide Systeme verbindet) und **Komponentengröße**. Die frühere Spalte
+„Dichte" heißt jetzt **Relationen pro Proposition** (Kanten je Knoten); die korrekt
+definierte **Graphdichte (gerichtet)** (m/(n·(n−1))) wird als eigene Spalte ausgewiesen.
+
 **Ausgabe:** `{STEM}_metriken.xlsx` mit den Blättern *Knotenmetriken · Kantenliste ·
 Dichte pro Kapitel · Typverteilung · Systembezug pro Kapitel*.
+Spalten *Knotenmetriken*: `… · In-Degree · Out-Degree · Betweenness (roh) ·
+Betweenness (komponentennormalisiert) · Cross-System-Betweenness · Brücken-Score ·
+Komponentengröße · Relationstyp`; Spalten *Dichte pro Kapitel*: `… · Vernetzungsgrad ·
+Relationen pro Proposition · Graphdichte (gerichtet) · Komponenten · Größte Komponente`.
 
 ---
 
@@ -153,9 +175,13 @@ Dichte pro Kapitel · Typverteilung · Systembezug pro Kapitel*.
 
 Vertiefende Auswertung der Systemverknüpfung: Systembezug-Verteilung; die **vermittelte
 Grenze** (Kanten über die Systemgrenze laufen überwiegend über `LIT-NLIT`-Brücken);
-Zentralität nach Systembezug; „Woran wird Literatur geknüpft?" (häufigste NLIT-Gegenstände);
-Brücken mit höchster Betweenness; sowie die **diachrone Entwicklung** über die Epochen
-(zwei Diagramme). **Ausgabe:** `nlit_gegenstaende_top40.xlsx`, `lit_nlit_bruecken_top.xlsx`,
+Zentralität nach Systembezug (kapitelübergreifende Klassenvergleiche ausschließlich über
+die **skalengleichen** Metriken: komponentennormalisierte und Cross-System-Betweenness);
+„Woran wird Literatur geknüpft?" (häufigste NLIT-Gegenstände); **Top-Brücken nach
+Cross-System-Betweenness** (Anzahl vermittelter kürzester LIT↔NLIT-Pfade; Sekundär­kriterium
+rohe Betweenness); sowie die **diachrone Entwicklung** über die Epochen (zwei Diagramme).
+
+**Ausgabe:** `nlit_gegenstaende_top40.xlsx`, `lit_nlit_bruecken_top.xlsx`,
 `entwicklung_ueber_zeit.xlsx`.
 
 ---
@@ -164,32 +190,46 @@ Brücken mit höchster Betweenness; sowie die **diachrone Entwicklung** über di
 
 Zwei Notebooks prüfen die Annotationsqualität gegen manuell annotierte Stichproben. Beide
 folgen demselben Aufbau: zunächst das **Inter-Annotator-Agreement** (IAA, Cohen's κ) zweier
-unabhängiger Annotator:innen, dann ein **Goldstandard** aus den übereinstimmenden Urteilen
+Annotator:innen, dann ein **Goldstandard** aus den übereinstimmenden Urteilen
 und schließlich die **LLM-Performance** gegen diesen Goldstandard (`scikit-learn`).
+
+> **Reichweite:** Beide Stichproben stammen ausschließlich aus dem ersten Kapitel
+> (*Mittelalterliche Literatur*; Plausibilität: Sätze 1–39, Systembezug: Sätze 1–32).
+> Die Kennzahlen sind daher nicht ohne Weiteres auf das Gesamtkorpus übertragbar; für
+> belastbare Aussagen ist eine über Kapitel und Relationstypen geschichtete
+> Zufallsstichprobe erforderlich.
 
 ### Evaluation A — Plausibilität der Inferenzen
 
 **Notebook:** `eval_plausibility.ipynb`
 **Eingabe:** `Beutin_complete_INF+System_EVAL_V1.xlsx` (zwei Annotator-Blätter mit
-Plausibilitätsurteilen über extrahierte Relationen).
+Plausibilitätsurteilen über die modellgenerierten Annotationen).
 **Verfahren:** IAA über das Plausibilitätsurteil → Goldstandard (übereinstimmende
-Annotationen) → Post-hoc-Plausibilitätsmetriken, auch nach Relationstyp aufgeschlüsselt;
-zusätzlich Fehler- und Disagreement-Analyse.
+Annotationen) → Post-hoc-Plausibilitätsmetriken, **getrennt nach Fallart** und nach
+Relationstyp aufgeschlüsselt; zusätzlich Fehler- und Disagreement-Analyse sowie
+automatische Dokumentation von Stichprobenherkunft und Typabdeckung.
 **Ergebnis (N = 105):** IAA Cohen's κ = 0.653 (substanziell), 92.4 % Übereinstimmung;
-LLM-Performance Accuracy 90.7 %, Precision 0.907, Recall 1.000, F1 0.951. Pro Typ: PR-BER
-und PR-FLG je 100 % plausibel, PR-UNA 75.7 %.
-**Ausgabe:** `Beutin_complete_INF_System_EVAL_V1_eval_ergebnisse.xlsx` — Blätter
+LLM-Performance: **Extraktionspräzision 100 %** (60/60 extrahierte Relationen plausibel),
+**Korrektheit der Nicht-Extraktion (PR-UNA) 75.7 %** (28/37; 9 übersehene Relationen),
+**Gesamtplausibilität (Accuracy) 90.7 %**. Pro Typ: PR-BER und PR-FLG je 100 % plausibel,
+PR-UNA 75.7 %; PR-INK ist in der Stichprobe nicht vertreten.
+**Ausgabe:** `Beutin_complete_INF+System_eval_ergebnisse.xlsx` — Blätter
 *Zusammenfassung · Performance pro Typ · Nicht-plausible Relationen · Disagreements*.
 
-> Methodik: Da nur tatsächlich extrahierte Relationen evaluiert werden, gilt Recall = 1.0
-> per Definition und Accuracy = Precision; die Evaluation misst die **Präzision** der
-> Extraktion, nicht ihre Vollständigkeit.
+> Methodik: Evaluiert werden post hoc die **vom Modell erzeugten** Annotationen — nicht
+> ein unabhängig erstellter Goldstandard aller tatsächlich bestehenden Relationen. Die
+> Vollständigkeit der Extraktion (Recall) ist auf dieser Basis nicht bestimmbar; **Recall
+> und F1 werden deshalb nicht als Ergebniskennzahlen berichtet.** Einen Hinweis auf die
+> Vollständigkeit geben lediglich die PR-UNA-Fälle der Stichprobe (9 von 37 als übersehene
+> Relationen beurteilt). 
 
 ### Evaluation B — Systembezug und Gegenstandsextraktion
 
 **Notebook:** `eval_systembezug.ipynb`
-**Eingabe:** Annotator-Stichprobe (`…_EVAL_V1.xlsx`), LLM-Klassifikat
-(`…_classify_systembezug.xlsx`), Goldstandard (`Beutin_systembezug_gold.xlsx`).
+**Eingabe:** Annotator-Stichprobe (`…_EVAL_V1.xlsx`, zwei Blätter) und LLM-Klassifikat
+(`…_classify_systembezug.xlsx`). Im Modus `BOTH` (Standard) wird der Goldstandard aus den
+**übereinstimmenden Annotationen** der beiden Annotator-Blätter gebildet; eine separate
+Goldstandard-Datei wird nur im Modus `EVAL` verwendet.
 **Verfahren:** Teil A IAA (Cohen's κ, Konfusionsmatrix); Teil B LLM-Klassifikation gegen den
 Goldstandard (Accuracy, κ, Pro-Label-Precision/Recall/F1, eigener Fokus auf die
 LIT-NLIT-Erkennung); Fehleranalyse.
@@ -208,8 +248,9 @@ CM LLM vs Gold · Pro-Label-Metriken · Fehler*.
 2. **Stufe 2** ausführen → `…_gesamt.{xlsx,csv}`, `…_stufe2_inter.{json,csv}`.
 3. **Ebene 1–2** (Systembezug/Gegenstände) ausführen → `…_gesamt_sytembezug.xlsx`,
    `…_systembezug.csv`.
-4. **Analyse A** ausführen → `…_metriken.xlsx`.
-5. **Analyse B** ausführen → Top-Gegenstände, Brücken, Diachronie.
+4. **Analyse A** ausführen → `…_metriken.xlsx` (Spaltenformat V3).
+5. **Analyse B** ausführen → Top-Gegenstände, Brücken, Diachronie
+   (läuft dank Kompatibilitätsmodus auch mit Metrik-Dateien im alten Format).
 6. **(optional) Evaluation** gegen die manuell annotierten Stichproben ausführen
    (`eval_plausibility.ipynb`, `eval_systembezug.ipynb`) → `…_eval_ergebnisse.xlsx`.
 
@@ -229,6 +270,13 @@ deshalb die Checkpoint-Logik. Zwischendateien (`…_stufe1.json`, `…_stufe2_in
   zusammenhängen; der Befund vieler kleiner „Begründungsinseln" ist daher teilweise von
   dieser Setzung mitbedingt und sollte durch Variation der Reichweite auf Robustheit
   geprüft werden.
+- **Gültigkeitsbereiche der Zentralitätsmetriken.** Die rohe Betweenness ist eine absolute
+  Pfadzählung und nur kapitel-/komponentenintern vergleichbar; kapitelübergreifende
+  Vergleiche und Rankings verwenden ausschließlich die komponentennormalisierte bzw. die
+  Cross-System-Betweenness (Definitionen in Analyse A). „Relationen pro Proposition" ist
+  keine Graphdichte im graphentheoretischen Sinn.
+- **Reichweite der Evaluation.** Beide Evaluationsstichproben stammen aus dem ersten
+  Kapitel; PR-INK ist in der Plausibilitätsstichprobe nicht vertreten (s. Evaluation).
 - **Beschreibungsanspruch.** Das Brandom-Modell dient als *Beschreibungsapparat* für Verknüpfungsmuster.
 
 ---
@@ -237,4 +285,6 @@ deshalb die Checkpoint-Logik. Zwischendateien (`…_stufe1.json`, `…_stufe2_in
 
 Die Notebooks in diesem Repository wurden **„vibe-coded"** — explorativ und KI-gestützt
 entwickelt. Die damit erzeugten Ergebnisse (Propositionen, Relationen, Systembezug und
-Metriken) wurden von den Verfasser:innen **manuell geprüft und validiert**.
+Metriken) wurden von den Verfasser:innen **manuell geprüft und validiert**. Änderungen
+gegenüber früheren Fassungen der Auswertung sind in der **Änderungshistorie** des README
+dokumentiert.

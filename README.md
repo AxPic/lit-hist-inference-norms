@@ -118,12 +118,12 @@ Die Tabellen bilden die Stufen der Pipeline ab. **Spaltenwörterbuch:**
 - *Systembezug pro Kapitel* (16): `Kapitel · Propositionen · LIT · NLIT · LIT-NLIT · Ohne · LIT % · NLIT % · LIT-NLIT %`
 
 \* Die `Originaltext`-Spalten sind in allen ausgelieferten Dateien **aus
-urheberrechtlichen Gründen geleert** (vgl. „Wichtige Hinweise"); die Spalte bleibt
+urheberrechtlichen Gründen geleert** (vgl. »Wichtige Hinweise«); die Spalte bleibt
 als Platzhalter erhalten, damit lokal erzeugte Fassungen spaltenkompatibel sind.
 
 ### Metriken: Definitionen und Gültigkeitsbereiche
 
-- **Relationen pro Proposition** („Dichte"): Kanten je Knoten, d. h. der halbe
+- **Relationen pro Proposition** (»Dichte«): Kanten je Knoten, d. h. der halbe
   mittlere Grad. **Keine** Graphdichte im graphentheoretischen Sinn; diese steht —
   korrekt als m/(n·(n−1)) berechnet — in der Spalte **Graphdichte (gerichtet)** und
   liegt bei Graphen dieser Größenordnung erwartbar nahe null.
@@ -183,11 +183,11 @@ Extraktion, die bei der Interpretation zu berücksichtigen sind:
 
 - Ein Pseudo-Kapitel **`(Unbekannt)`** (11 Propositionen aus 5 Sätzen mit vom Modell
   erfundenen Satz-IDs) läuft als eigene Zeile durch die Kapitel-Blätter; die inhaltlichen
-  „16 Kapitel" sind real 15 Kapitel plus dieses Artefakt.
+  »16 Kapitel« sind real 15 Kapitel plus dieses Artefakt.
 - **2 duplizierte Propositions-IDs** (`P(11066.1/2)`) mit unterschiedlichen Texten; der
   Graph führt sie zusammen (daher 29 446 Knoten bei 29 448 Propositionszeilen).
 - **15 Selbstschleifen** und **11 Kanten vom Typ PR-UNA** in der Kantenliste
-  (schemawidrig, da PR-UNA „kein Paar" bedeutet); **53 als `intra` markierte Kanten**
+  (schemawidrig, da PR-UNA »kein Paar« bedeutet); **53 als `intra` markierte Kanten**
   verbinden Propositionen verschiedener Sätze; **31 parallele Kantenpaare** werden im
   Graphen dedupliziert.
 - Auf kürzeste Pfade und damit auf alle Betweenness-Werte haben Selbstschleifen keinen
@@ -231,6 +231,6 @@ keine Zitate; die `Originaltext`-Spalten sind geleert.
 
 ## Hinweis zur Erstellung
 
-Die Notebooks in diesem Repository wurden **„vibe-coded"** — explorativ und KI-gestützt
+Die Notebooks in diesem Repository wurden **»vibe-coded«** — explorativ und KI-gestützt
 entwickelt. Die damit erzeugten Ergebnisse (Propositionen, Relationen, Systembezug und
 Metriken) wurden von den Verfasser:innen **manuell geprüft und validiert**.

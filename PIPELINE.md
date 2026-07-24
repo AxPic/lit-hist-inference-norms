@@ -181,8 +181,27 @@ die **skalengleichen** Metriken: komponentennormalisierte und Cross-System-Betwe
 Cross-System-Betweenness** (Anzahl vermittelter kürzester LIT↔NLIT-Pfade; Sekundär­kriterium
 rohe Betweenness); sowie die **diachrone Entwicklung** über die Epochen (zwei Diagramme).
 
+**Spitzenknoten-Analyse (Abschnitt 4b).** Für jedes Epochenkapitel und jedes
+Inferenznetzwerk (schwache Komponente mit max. Betweenness > 0) wird bestimmt, welcher
+Systembezug-Klasse der zentralste Knoten angehört. **Gleichstandsbehandlung
+(klasseneindeutige Auflösung):** Teilen sich mehrere Knoten den Spitzenwert, wird das
+Netzwerk der Klasse zugerechnet, sofern alle punktgleichen Knoten derselben Klasse
+angehören; nur klassengemischte Gleichstände bleiben unentscheidbar und werden
+ausgewiesen und ausgeschlossen. Ergebnisse: Auf Kapitelebene stellt in 8 der 15 Kapitel
+eindeutig eine `LIT`-Proposition den Spitzenknoten (je 1× `LIT-NLIT`, 3× `NLIT`; 3 Kapitel
+klassenambig, `LIT` jeweils im Gleichstand vertreten). Auf Netzwerkebene entfallen von
+2 167 klasseneindeutigen Spitzenknoten (von 2 329 bestimmbaren; 162 klassenambig)
+54,1 % auf `LIT`, 30,0 % auf `LIT-NLIT` und 15,8 % auf `NLIT` — gemessen an den
+Basisraten unter den vernetzten Propositionen (55,5 / 27,6 / 16,8 %) ist `LIT` damit
+leicht unter-, `LIT-NLIT` leicht überrepräsentiert. Alternative Gleichstands­behandlungen
+(anteilige Zurechnung: 52,9/31,1/16,0 %; Ausschluss aller Gleichstände: 52,9/31,4/15,7 %)
+bestätigen den Befund; das Blatt *Robustheit Gleichstände* dokumentiert alle Varianten.
+
 **Ausgabe:** `nlit_gegenstaende_top40.xlsx`, `lit_nlit_bruecken_top.xlsx`,
-`entwicklung_ueber_zeit.xlsx`.
+`entwicklung_ueber_zeit.xlsx`, `spitzenknoten_analyse.xlsx` (Blätter *Spitzenknoten je
+Kapitel · Spitzenknoten je Netzwerk · Robustheit Gleichstände*) sowie die Diagramme
+`spitzenknoten_je_kapitel.png` (Grundlage für Abbildung 2; klassenambige Kapitel
+schraffiert markiert) und `spitzenknoten_vs_bestand.png`.
 
 ---
 
@@ -275,6 +294,13 @@ deshalb die Checkpoint-Logik. Zwischendateien (`…_stufe1.json`, `…_stufe2_in
   Vergleiche und Rankings verwenden ausschließlich die komponentennormalisierte bzw. die
   Cross-System-Betweenness (Definitionen in Analyse A). „Relationen pro Proposition" ist
   keine Graphdichte im graphentheoretischen Sinn.
+- **Gleichstände bei Spitzenknoten.** In 23 % der Netzwerke mit bestimmbarem Spitzenknoten
+  teilen sich mehrere Knoten den Höchstwert (strukturell bedingt, z. B. Ketten gerader
+  Länge). Alle Spitzenknoten-Anteile beruhen auf der klasseneindeutigen Auflösung
+  (s. Analyse B); klassengemischte Gleichstände werden ausgewiesen, alternative
+  Behandlungen als Robustheitsvarianten mitberichtet. Frühere Fassungen mit
+  Gleichständen als eigener Restkategorie sind mit den aktuellen Anteilen nicht direkt
+  vergleichbar.
 - **Reichweite der Evaluation.** Beide Evaluationsstichproben stammen aus dem ersten
   Kapitel; PR-INK ist in der Plausibilitätsstichprobe nicht vertreten (s. Evaluation).
 - **Beschreibungsanspruch.** Das Brandom-Modell dient als *Beschreibungsapparat* für Verknüpfungsmuster.

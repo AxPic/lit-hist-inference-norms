@@ -2,9 +2,9 @@
 
 Dieses Repository enthält die Daten, Annotationsrichtlinien, Prompts und Auswertungs­notebooks
 eines Projekts, das eine Literaturgeschichte (Beutin et al., *Deutsche Literaturgeschichte*)
-mit den Mitteln von Robert Brandoms Inferentialismus rekonstruiert. Ziel ist es, die **impliziten Begründungsmuster** literaturgeschichtlichen Schreibens sichtbar zu machen:
+mit den Mitteln von Robert Brandoms Inferentialismus rekonstruiert. Ziel ist es, die **impliziten Begründungs- und Verknüpfungsmuster** literaturgeschichtlichen Schreibens sichtbar zu machen:
 Welche Propositionen stützen, erzwingen oder schließen einander aus, und wie wird das
-Literarische mit dem Nicht-Literarischen verknüpft?
+Literatursystem mit dem Nicht-Literatursystem verknüpft?
 
 Die Erschließung erfolgt in drei aufeinander aufbauenden Ebenen (Ebene 0–2), gefolgt von
 einer graphen- und netzwerkbasierten Auswertung. Eine ausführliche Schritt-für-Schritt-
@@ -40,7 +40,7 @@ Beschreibung des Verfahrens steht in **[`PIPELINE.md`](./PIPELINE.md)**.
     ├── Beutin_complete_Direktzitat_gesamt_sytembezug.xlsx
     ├── Beutin_complete_Direktzitat_metriken.xlsx
     ├── Beutin_complete_INF+System_eval_ergebnisse.xlsx     ← Eval-Ergebnisse Inferenzen
-    └── systembezug_eval_ergebnisse.xlsx                         ← Eval-Ergebnisse Systembezug
+    └── systembezug_eval_ergebnisse.xlsx                    ← Eval-Ergebnisse Systembezug
 ```
 
 ---
@@ -79,7 +79,7 @@ einen expliziten dreistufigen Abgrenzungstest (Festlegungs-, Berechtigungs-, Ink
 | `stufe1_propositionsextraktion_kapitel_final.ipynb` | PDF-Erschließung + Stufe 1 | Beutin-PDF + Intra-Prompt → `…_stufe1.{xlsx,csv,json}` |
 | `stufe2_inter_satz_relationen_kapitel_final.ipynb` | Stufe 2 + Zusammenführung | `…_stufe1.json/csv` + Inter-Prompt → `…_gesamt.{xlsx,csv}`, `…_stufe2_inter.{csv,json}` |
 | `inferenzgraph_analyse_kapitel_final_V3.ipynb` | Graphkonstruktion + Metriken (Betweenness in drei Varianten, s. u.) | Stufe-1/2-JSON + Systembezug-CSV → `…_metriken.xlsx` |
-| `systembezug_netzwerk_analyse.ipynb` | Systembezug-Netzwerkanalyse (kapitelübergreifende Vergleiche nur über skalengleiche Metriken) | `…_metriken.xlsx` → Top-Gegenstände, Brücken, Diachronie |
+| `systembezug_netzwerk_analyse.ipynb` | Systembezug-Netzwerkanalyse (kapitelübergreifende Vergleiche nur über skalengleiche Metriken) + Spitzenknoten-Analyse (zentralste Knoten je Kapitel/Netzwerk, klasseneindeutige Gleichstandsauflösung) | `…_metriken.xlsx` → Top-Gegenstände, Brücken, Diachronie, `spitzenknoten_analyse.xlsx` |
 | `eval_plausibility.ipynb` | Evaluation: Plausibilität der Inferenzen (IAA + getrennte Extraktions-/Nicht-Extraktions-Kennzahlen) | Annotations-XLSX → `…_eval_ergebnisse.xlsx` |
 | `eval_systembezug.ipynb` | Evaluation: Systembezug (IAA + LLM vs. Goldstandard) | Annotations-/LLM-XLSX → `systembezug_eval_ergebnisse.xlsx` |
 
@@ -138,6 +138,17 @@ als Platzhalter erhalten, damit lokal erzeugte Fassungen spaltenkompatibel sind.
   **Vermittlungslast zwischen den Systemen** und Grundlage des Top-Brücken-Rankings.
 - **Brücken-Score**: min(#LIT-Nachbarn, #NLIT-Nachbarn); > 0 genau dann, wenn der Knoten
   tatsächlich beide Systeme verbindet.
+- **Spitzenknoten** (zentralster Knoten eines Kapitels bzw. Inferenznetzwerks): Knoten
+  mit der höchsten rohen Betweenness. **Gleichstandsbehandlung (klasseneindeutig):**
+  Teilen sich mehrere Knoten den Spitzenwert, zählt das Netzwerk zur Klasse, sofern alle
+  punktgleichen Knoten derselben Systembezug-Klasse angehören; klassengemischte
+  Gleichstände (162 von 2 329 Netzwerken) werden ausgewiesen und ausgeschlossen.
+  Ergebnisse: Kapitelebene 8 der 15 Kapitel eindeutig `LIT` (1× `LIT-NLIT`, 3× `NLIT`,
+  3 klassenambig); Netzwerkebene (n = 2 167): `LIT` 54,1 %, `LIT-NLIT` 30,0 %, `NLIT`
+  15,8 % gegenüber Basisraten von 55,5 / 27,6 / 16,8 % unter den vernetzten
+  Propositionen — `LIT-NLIT` als Spitzenknoten leicht überrepräsentiert. Alternative
+  Gleichstandsbehandlungen bestätigen den Befund (Blatt *Robustheit Gleichstände* in
+  `spitzenknoten_analyse.xlsx`).
 - Kapitelübergreifende Klassenvergleiche (Ø-Zentralität nach Systembezug, Top-Brücken)
   verwenden ausschließlich die normalisierten bzw. Cross-System-Werte.
 
@@ -148,7 +159,7 @@ Stichproben: zunächst das **Inter-Annotator-Agreement** (IAA, Cohen's κ) zweie
 Annotator:innen, dann die **LLM-Performance** gegen einen Goldstandard aus den
 übereinstimmenden Annotationen (`scikit-learn`).
 
-**`eval_plausibility.ipynb` → `Beutin_complete_INF+System_EVAL_eval_ergebnisse.xlsx`**
+**`eval_plausibility.ipynb` → `Beutin_complete_INF+System_eval_ergebnisse.xlsx`**
 — Post-hoc-Plausibilitätsvalidierung der Inferenzannotationen (N = 105). IAA Cohen's
 κ = 0.653 (substanziell), 92.4 % Übereinstimmung. LLM-Performance, getrennt nach Fallart:
 **Extraktionspräzision 100 %** (60/60 extrahierte Relationen plausibel),

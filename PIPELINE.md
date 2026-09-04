@@ -179,7 +179,10 @@ Zentralität nach Systembezug (kapitelübergreifende Klassenvergleiche ausschlie
 die **skalengleichen** Metriken: komponentennormalisierte und Cross-System-Betweenness);
 „Woran wird Literatur geknüpft?" (häufigste NLIT-Gegenstände); **Top-Brücken nach
 Cross-System-Betweenness** (Anzahl vermittelter kürzester LIT↔NLIT-Pfade; Sekundär­kriterium
-rohe Betweenness); sowie die **diachrone Entwicklung** über die Epochen (zwei Diagramme).
+rohe Betweenness); die **Begründungsrichtungen** über die Systemgrenze (Achsenmodell
+NLIT < LIT-NLIT < LIT; eine systemüberschreitende Relation gilt als aufwärts gerichtet,
+wenn die gestützte Aussage höher liegt als ihr Grund: 60,9 % der 4 203 Kanten, in allen
+15 Kapiteln überwiegend); sowie die **diachrone Entwicklung** über die Epochen (zwei Diagramme).
 
 **Spitzenknoten-Analyse (Abschnitt 4b).** Für jedes Epochenkapitel und jedes
 Inferenznetzwerk (schwache Komponente mit max. Betweenness > 0) wird bestimmt, welcher
